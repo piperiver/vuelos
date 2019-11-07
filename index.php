@@ -59,24 +59,27 @@ class Vuelos
 		</div>";
 
 		if (isset($_GET["sendMail"])) {
-			$this->enviarEmail($html);
+			$this->enviarEmail($html, "Listado de precios del año Latam");
 			if(!empty($htmlHogar)){
-				$this->enviarEmail($htmlHogar);
+				$this->enviarEmail($htmlHogar, "Listado de precios del dia Hogar");
+				echo $htmlHogar;
 			}
+			echo $html;
+			echo "Correos enviados corrrectamente";
 		} else {
 			echo $html;
 		}
 	}
 
-	public function enviarEmail($message)
+	public function enviarEmail($message, $asunto)
 	{
 		$headers = "MIME-Version: 1.0\r\n";
 		$headers .= "Content-Type: text/html; charset=UTF-8\r\n";
 
 		$correos = "piperiver7@gmail.com";
 		$subject = "Listado de precios del año Latam";
-		$result = mail($correos, $subject, $message, $headers);
-		die();
+		return $result = mail($correos, $asunto, $message, $headers);
+		
 	}
 
 	public function getTarifas($annio, $mes, $dia, $origen, $destino)
@@ -181,8 +184,9 @@ class Vuelos
 	}
 }
 
-$objConsultas = new consultas;
-$htmlHogar = $objConsultas->index();
+//$objConsultas = new consultas;
+//$htmlHogar = $objConsultas->index();
+
 
 $objVuelos = new Vuelos();
-$objVuelos->controller($htmlHogar);
+$objVuelos->controller("");

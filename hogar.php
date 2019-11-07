@@ -4,13 +4,49 @@ class consultas{
 
     var $consultar = [
         [
-            "NOMBRE" => "Lavadora Samsung",
+            "NOMBRE" => "Lavadora",
             "URL" => "https://locomparas.com/producto/lavadora-samsung-activ-dual-wash-wa13j5712lg/",
         ],
         [
             "NOMBRE" => "Nevera",
-            "URL" => "https://locomparas.com/producto/nevecon-haceb-sbs656l-titanio-656lt/"
-        ]
+            "URL" => "https://locomparas.com/producto/nevera-challenger-no-frost-cr430-negra-360lt/"
+        ],
+        [
+            "NOMBRE" => "Nevera",
+            "URL" => "https://locomparas.com/producto/nevera-lg-lt32wppx-plateada-333lt/"
+        ],
+        [
+            "NOMBRE" => "Nevera",
+            "URL" => "https://locomparas.com/producto/lavadora-samsung-wa18f7l6dda-39lbs-plateada/"
+        ],
+        [
+            "NOMBRE" => "Televisor",
+            "URL" => "https://locomparas.com/producto/televisor-lg-49-49lk5700-smart-lcd-full-hd/"
+        ],
+        [
+            "NOMBRE" => "Televisor",
+            "URL" => "https://locomparas.com/producto/televisor-lg-49-49uk6200-smart-lcd-4k-uhd/"
+        ],
+        [
+            "NOMBRE" => "Televisor",
+            "URL" => "https://locomparas.com/producto/televisor-lg-55-55uk6200-smart-lcd-4k-uhd/"
+        ],
+        [
+            "NOMBRE" => "Televisor",
+            "URL" => "https://locomparas.com/producto/televisor-samsung-50-50nu7100-smart-led-4k-uhd/"
+        ],
+        [
+            "NOMBRE" => "Televisor",
+            "URL" => "https://locomparas.com/producto/televisor-samsung-50-un50mu6103-smart-4k-uhd/"
+        ],
+        [
+            "NOMBRE" => "Televisor",
+            "URL" => "https://locomparas.com/producto/televisor-samsung-55-55nu7100-smart-led-4k-uhd/"
+        ],
+        [
+            "NOMBRE" => "Televisor",
+            "URL" => "https://locomparas.com/producto/televisor-samsung-58-58nu7100-smart-led-4k-uhd/"
+        ],
     ];
 
     function index(){
@@ -52,9 +88,10 @@ class consultas{
         $data = [];
 
         foreach($this->consultar as $consultar){
-            $titulo =  $this->extraerByTag($consultar["URL"], "title");
-            $precios = $this->extraerByClass($consultar["URL"], "val_sim_price");
-            $textos = $this->extraerByClass($consultar["URL"], "vendor_sim_price");
+            $document = $this->getHtml($consultar["URL"]);
+            $titulo =  $this->extraerByTag("title", $document);
+            $precios = $this->extraerByClass("val_sim_price", $document);
+            $textos = $this->extraerByClass("vendor_sim_price", $document);
             
             $tempData = [];
             $tempData["titulo"] = $titulo;
@@ -68,13 +105,13 @@ class consultas{
             $data[] = $tempData;
         }
         return $data;
-        echo "<pre>";
-        print_r($data);
     }
 
-    function extraerByClass($url, $classname){
-        $html = file_get_contents($url);
+    function getHtml($url){
+        return file_get_contents($url);
+    }
 
+    function extraerByClass($classname, $html){
         $dom = new DomDocument();
         $dom->loadHTML($html);
         $finder = new DomXPath($dom);
@@ -87,9 +124,7 @@ class consultas{
         return $response;
     }
 
-    function extraerByTag($url, $tag){
-        $html = file_get_contents($url);
-
+    function extraerByTag($tag, $html){
         $dom = new DomDocument();
         $dom->loadHTML($html);
         $title = $dom->getElementsByTagName($tag)->item(0);
